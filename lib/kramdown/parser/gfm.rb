@@ -260,9 +260,9 @@ module Kramdown
         # Consume the newline
         @src.scan("\n")
 
-        # Determine title: use custom title if provided, otherwise use type
+        # Determine title: use custom title if provided, otherwise use indicator (preserves alias names)
         custom_title = first_content && !first_content.strip.empty? ? first_content.strip : nil
-        title = custom_title || callout_type.capitalize
+        title = custom_title || callout_indicator.capitalize
 
         # Collect remaining blockquote lines
         # Don't include first_content if it was used as a custom title
