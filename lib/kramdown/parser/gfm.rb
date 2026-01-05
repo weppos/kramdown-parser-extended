@@ -68,7 +68,7 @@ module Kramdown
         @span_parsers[i] = :escaped_chars_gfm if i
         @span_parsers << :strikethrough_gfm
 
-        @hard_line_break = "#{@options[:hard_wrap] ? '' : '\\'}\n"
+        @hard_line_break = "#{'\\' unless @options[:hard_wrap]}\n"
 
         return unless @options[:gfm_emojis]
 
@@ -129,7 +129,7 @@ module Kramdown
         item.options[:raw_text] = raw_text
       end
 
-      NON_WORD_RE = /[^\p{Word}\- \t]/.freeze
+      NON_WORD_RE = /[^\p{Word}\- \t]/
 
       def generate_gfm_header_id(text)
         result = text.downcase
@@ -143,7 +143,7 @@ module Kramdown
         @options[:auto_id_prefix] + result
       end
 
-      ATX_HEADER_START = /^(?<level>\#{1,6})[\t ]+(?<contents>.*)\n/.freeze
+      ATX_HEADER_START = /^(?<level>\#{1,6})[\t ]+(?<contents>.*)\n/
       define_parser(:atx_header_gfm, ATX_HEADER_START, nil, 'parse_atx_header')
       define_parser(:atx_header_gfm_quirk, ATX_HEADER_START)
 
@@ -157,12 +157,12 @@ module Kramdown
         true
       end
 
-      FENCED_CODEBLOCK_START = /^[ ]{0,3}[~`]{3,}/.freeze
-      FENCED_CODEBLOCK_MATCH = /^[ ]{0,3}(([~`]){3,})\s*?((\S+?)(?:\?\S*)?)?\s*?\n(.*?)^[ ]{0,3}\1\2*\s*?\n/m.freeze
+      FENCED_CODEBLOCK_START = /^ {0,3}[~`]{3,}/
+      FENCED_CODEBLOCK_MATCH = /^ {0,3}(([~`]){3,})\s*?((\S+?)(?:\?\S*)?)?\s*?\n(.*?)^ {0,3}\1\2*\s*?\n/m
       define_parser(:codeblock_fenced_gfm, FENCED_CODEBLOCK_START, nil, 'parse_codeblock_fenced')
 
-      STRIKETHROUGH_DELIM = /~~/.freeze
-      STRIKETHROUGH_MATCH = /#{STRIKETHROUGH_DELIM}(?!\s|~).*?[^\s~]#{STRIKETHROUGH_DELIM}/m.freeze
+      STRIKETHROUGH_DELIM = /~~/
+      STRIKETHROUGH_MATCH = /#{STRIKETHROUGH_DELIM}(?!\s|~).*?[^\s~]#{STRIKETHROUGH_DELIM}/m
       define_parser(:strikethrough_gfm, STRIKETHROUGH_MATCH, '~~')
 
       def parse_strikethrough_gfm
@@ -193,7 +193,7 @@ module Kramdown
         is_tasklist   = false
         box_unchecked = '<input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />'
         box_checked   = '<input type="checkbox" class="task-list-item-checkbox" ' \
-          'disabled="disabled" checked="checked" />'
+                        'disabled="disabled" checked="checked" />'
 
         current_list.children.each do |li|
           list_items = li.children
@@ -216,7 +216,7 @@ module Kramdown
       # GitHub-style callouts (also called admonitions or alerts)
       # Matches blockquotes starting with > [!TYPE] where TYPE is NOTE, TIP, IMPORTANT, WARNING, CAUTION
       CALLOUT_TYPES = %w[NOTE TIP IMPORTANT WARNING CAUTION].freeze
-      CALLOUT_START = /^>[ \t]*\[!(#{CALLOUT_TYPES.join('|')})\]/.freeze
+      CALLOUT_START = /^>[ \t]*\[!(#{CALLOUT_TYPES.join('|')})\]/
 
       def parse_blockquote
         # Check if this is a callout before parsing as regular blockquote
@@ -239,7 +239,7 @@ module Kramdown
         first_content = match[2]
 
         # Consume the newline
-        @src.scan(/\n/)
+        @src.scan("\n")
 
         # Collect remaining blockquote lines
         content_lines = []
@@ -248,13 +248,13 @@ module Kramdown
         while @src.scan(/^>[ \t]?/)
           line = @src.scan(/.*$/)
           content_lines << (line || '')
-          @src.scan(/\n/) || break
+          @src.scan("\n") || break
         end
 
         # Create callout container
         callout_class = "callout callout-#{callout_type.downcase}"
         el = Element.new(:html_element, 'div', {'class' => callout_class},
-                        category: :block, line: line_number)
+                         category: :block, line: line_number)
         @tree.children << el
 
         # Parse content as markdown
@@ -272,7 +272,7 @@ module Kramdown
         true
       end
 
-      ESCAPED_CHARS_GFM = /\\([\\.*_+`<>()\[\]{}#!:\|"'\$=\-~])/.freeze
+      ESCAPED_CHARS_GFM = /\\([\\.*_+`<>()\[\]{}#!:|"'$=\-~])/
       define_parser(:escaped_chars_gfm, ESCAPED_CHARS_GFM, '\\\\', :parse_escaped_chars)
 
       PARAGRAPH_END_GFM = Regexp.union(
@@ -285,12 +285,12 @@ module Kramdown
       def update_text_type(element, child)
         children = []
         lines = child.value.split(@hard_line_break, -1)
-        omit_trailing_br = (lines[-1].empty? && Kramdown::Element.category(element) == :block &&
-                            element.children[-1] == child)
+        omit_trailing_br = lines[-1].empty? && Kramdown::Element.category(element) == :block &&
+          element.children[-1] == child
 
         lines.each_with_index do |line, index|
           new_element_options = {location: child.options[:location] + index}
-          children << Element.new(:text, (index > 0 ? "\n#{line}" : line), nil, new_element_options)
+          children << Element.new(:text, ((index > 0) ? "\n#{line}" : line), nil, new_element_options)
 
           if index < lines.size - 2 || (index == lines.size - 2 && !omit_trailing_br)
             children << Element.new(:br, nil, nil, new_element_options)

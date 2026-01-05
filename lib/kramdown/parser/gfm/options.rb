@@ -52,7 +52,7 @@ module Kramdown
       Used by: GFM parser
     EOF
       simple_array_validator(val, :gfm_quirks).map! do |v|
-        v.kind_of?(Symbol) ? v : str_to_sym(v.to_s)
+        (v.kind_of?(Symbol)) ? v : str_to_sym(v.to_s)
       end
     end
 
@@ -91,7 +91,7 @@ module Kramdown
     EOF
       val = simple_hash_validator(val, :gfm_emoji_opts)
       val.keys.each do |k|
-        val[k.kind_of?(String) ? str_to_sym(k) : k] = val.delete(k)
+        val[(k.kind_of?(String)) ? str_to_sym(k) : k] = val.delete(k)
       end
       val
     end
