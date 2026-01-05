@@ -29,6 +29,7 @@ At the moment this parser is based on the kramdown parser, with the following ch
 - Strikethroughs can be created using two tildes surrounding a piece of text.
 - Blank lines between paragraphs and other block elements are not needed by default (see option `gfm_quirks`).
 - Render emojis used at GitHub.
+- GitHub-style callouts (also called admonitions or alerts) using `> [!TYPE]` syntax.
 
 Please note that the GFM parser tries to mimic the parser used at GitHub which means that for some special cases broken behaviour is the expected behaviour.
 
@@ -43,6 +44,37 @@ In this case the correct GFM result is:
 ```html
 <p>This <del>is a complex strike through *test ~~with nesting</del> involved* here~~.</p>
 ```
+
+### Callouts
+
+Callouts (also known as admonitions or alerts) provide a way to highlight important information in your documentation. They use the syntax `> [!TYPE]` where TYPE is one of the supported callout types.
+
+**Supported callout types:**
+
+- `INFO` - General informational callouts
+- `NOTE` - Important notes for users
+- `SUCCESS` - Success messages or helpful tips
+- `WARNING` - Warning messages
+- `DANGER` - Critical warnings
+
+**Supported aliases:**
+
+- `CAUTION` - Renders as `DANGER`
+
+**Example:**
+
+```markdown
+> [!NOTE]
+> This is a note callout with important information.
+
+> [!WARNING]
+> Be careful with this operation!
+
+> [!CAUTION]
+> This uses the CAUTION alias and renders as DANGER.
+```
+
+Callouts render as `<div>` elements with CSS classes `callout callout-{type}` (e.g., `callout-note`, `callout-danger`), allowing you to style them with custom CSS. Aliases use the primary type's style class but preserve their original name for potential title support.
 
 ### Options
 
