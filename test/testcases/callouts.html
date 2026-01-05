@@ -1,18 +1,18 @@
 <h1>Single-line callouts</h1>
 
+<div class="callout callout-info">  <p>General information for users.</p>
+</div>
+
 <div class="callout callout-note">  <p>Useful information that users should know, even when skimming content.</p>
 </div>
 
-<div class="callout callout-tip">  <p>Helpful advice for doing things better or more easily.</p>
-</div>
-
-<div class="callout callout-important">  <p>Key information users need to know to achieve their goal.</p>
+<div class="callout callout-success">  <p>Helpful advice for doing things better or more easily.</p>
 </div>
 
 <div class="callout callout-warning">  <p>Urgent info that needs immediate user attention to avoid problems.</p>
 </div>
 
-<div class="callout callout-caution">  <p>Advises about risks or negative outcomes of certain actions.</p>
+<div class="callout callout-danger">  <p>Advises about risks or negative outcomes of certain actions.</p>
 </div>
 
 <h1>Multi-line callouts</h1>
@@ -22,14 +22,14 @@
   <p>It has multiple paragraphs.</p>
 </div>
 
-<div class="callout callout-tip">  <p>Line one
+<div class="callout callout-success">  <p>Line one
 Line two
 Line three</p>
 </div>
 
 <h1>Callouts with markdown content</h1>
 
-<div class="callout callout-important">  <p>This has <strong>bold</strong> and <em>italic</em> text.</p>
+<div class="callout callout-info">  <p>This has <strong>bold</strong> and <em>italic</em> text.</p>
 </div>
 
 <div class="callout callout-warning">  <p>This has a <a href="https://example.com">link</a>.</p>
@@ -58,7 +58,7 @@ It should not be a callout.</p>
 
 <p>Some text before.</p>
 
-<div class="callout callout-caution">  <p>Be careful with this operation.</p>
+<div class="callout callout-danger">  <p>Be careful with this operation.</p>
 </div>
 
 <p>Some text after.</p>
@@ -72,9 +72,14 @@ It should not be a callout.</p>
 
 <h1>Empty content after callout marker</h1>
 
-<div class="callout callout-tip"></div>
+<div class="callout callout-success"></div>
 
 <h1>Only first line content</h1>
 
 <div class="callout callout-warning">  <p>This is all on one line.</p>
+</div>
+
+<h1>Aliases</h1>
+
+<div class="callout callout-danger">  <p>This uses the CAUTION alias which renders as DANGER.</p>
 </div>
