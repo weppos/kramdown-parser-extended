@@ -96,5 +96,51 @@ module Kramdown
       val
     end
 
+    define(:gfm_callout_types, Object, [], <<~EOF) do |val|
+      Define additional callout types beyond the default set.
+
+      The default callout types are: INFO, NOTE, SUCCESS, WARNING, DANGER
+
+      This option allows you to add custom callout types. The value should be
+      an array of strings representing the additional type names (case-insensitive).
+
+      Example: ['HELP', 'FAQ', 'TIP']
+
+      These custom types will be added to the default types and can be used
+      in callout syntax: > [!HELP]
+
+      Default: []
+      Used by: GFM parser
+    EOF
+      simple_array_validator(val, :gfm_callout_types).map! do |v|
+        v.to_s.upcase
+      end
+    end
+
+    define(:gfm_callout_aliases, Object, {'CAUTION' => 'DANGER'}, <<~EOF) do |val|
+      Define callout aliases that map to primary callout types.
+
+      Aliases allow alternative callout names to render using a primary type's
+      style while preserving the alias name for titles.
+
+      The value should be a hash mapping alias names to primary type names.
+      Both keys and values are case-insensitive and will be converted to uppercase.
+
+      Example: {'ERROR' => 'DANGER', 'TIP' => 'SUCCESS'}
+
+      Note: Providing this option will REPLACE the default aliases, not merge with them.
+      The default is: {'CAUTION' => 'DANGER'}
+
+      Default: {'CAUTION' => 'DANGER'}
+      Used by: GFM parser
+    EOF
+      val = simple_hash_validator(val, :gfm_callout_aliases)
+      result = {}
+      val.each do |k, v|
+        result[k.to_s.upcase] = v.to_s.upcase
+      end
+      result
+    end
+
   end
 end

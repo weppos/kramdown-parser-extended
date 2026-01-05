@@ -1,18 +1,18 @@
 # Single-line callouts
 
+> [!INFO]
+> General information for users.
+
 > [!NOTE]
 > Useful information that users should know, even when skimming content.
 
-> [!TIP]
+> [!SUCCESS]
 > Helpful advice for doing things better or more easily.
-
-> [!IMPORTANT]
-> Key information users need to know to achieve their goal.
 
 > [!WARNING]
 > Urgent info that needs immediate user attention to avoid problems.
 
-> [!CAUTION]
+> [!DANGER]
 > Advises about risks or negative outcomes of certain actions.
 
 # Multi-line callouts
@@ -22,14 +22,14 @@
 >
 > It has multiple paragraphs.
 
-> [!TIP]
+> [!SUCCESS]
 > Line one
 > Line two
 > Line three
 
 # Callouts with markdown content
 
-> [!IMPORTANT]
+> [!INFO]
 > This has **bold** and *italic* text.
 
 > [!WARNING]
@@ -54,7 +54,7 @@
 
 Some text before.
 
-> [!CAUTION]
+> [!DANGER]
 > Be careful with this operation.
 
 Some text after.
@@ -68,7 +68,7 @@ Next paragraph.
 
 # Empty content after callout marker
 
-> [!TIP]
+> [!SUCCESS]
 
 # Only first line content
 
@@ -79,13 +79,18 @@ Next paragraph.
 > [!NOTE] Custom Note Title
 > This callout has a custom title.
 
-> [!TIP] Callouts can have custom titles
+> [!SUCCESS] Callouts can have custom titles
 > Like this one.
 
-> [!IMPORTANT] Remember This!
+> [!INFO] Remember This!
 > Custom titles can be anything you want.
 
 > [!WARNING] Multi-line custom title callout
 > With content on multiple lines.
 >
 > And multiple paragraphs too.
+
+# Aliases
+
+> [!CAUTION]
+> This uses the CAUTION alias which renders as DANGER.

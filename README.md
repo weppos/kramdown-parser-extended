@@ -29,6 +29,7 @@ At the moment this parser is based on the kramdown parser, with the following ch
 - Strikethroughs can be created using two tildes surrounding a piece of text.
 - Blank lines between paragraphs and other block elements are not needed by default (see option `gfm_quirks`).
 - Render emojis used at GitHub.
+- GitHub-style callouts (also called admonitions or alerts) using `> [!TYPE]` syntax.
 
 Please note that the GFM parser tries to mimic the parser used at GitHub which means that for some special cases broken behaviour is the expected behaviour.
 
@@ -43,6 +44,41 @@ In this case the correct GFM result is:
 ```html
 <p>This <del>is a complex strike through *test ~~with nesting</del> involved* here~~.</p>
 ```
+
+### Callouts
+
+Callouts (also known as admonitions or alerts) provide a way to highlight important information in your documentation. They use the syntax `> [!TYPE]` where TYPE is one of the supported callout types.
+
+**Default callout types:**
+
+- `INFO` - General informational callouts
+- `NOTE` - Important notes for users
+- `SUCCESS` - Success messages or helpful tips
+- `WARNING` - Warning messages
+- `DANGER` - Critical warnings
+
+**Default aliases:**
+
+- `CAUTION` - Renders as `DANGER`
+
+**Example:**
+
+```markdown
+> [!NOTE]
+> This is a note callout with important information.
+
+> [!WARNING]
+> Be careful with this operation!
+
+> [!CAUTION]
+> This uses the CAUTION alias and renders as DANGER.
+```
+
+Callouts render as `<div>` elements with CSS classes `callout callout-{type}` (e.g., `callout-note`, `callout-danger`), allowing you to style them with custom CSS. Aliases use the primary type's style class but preserve their original name for potential title support.
+
+**Customization:**
+
+You can add custom callout types and define your own aliases using the `gfm_callout_types` and `gfm_callout_aliases` options. See the [Options](#options) section for details.
 
 ### Options
 
@@ -89,6 +125,33 @@ The GFM parser provides the following options:
     Therefore the absolute path to an emoji file would be:
     `https://github.githubassets.com/images/icons/emoji/unicode/[emoji-filename]`
 
+- **`gfm_callout_types`**: Define additional callout types beyond the default set (default: `[]`)
+
+  The default callout types are: `INFO`, `NOTE`, `SUCCESS`, `WARNING`, `DANGER`
+
+  This option allows you to add custom callout types. The value should be an array of strings representing the additional type names (case-insensitive).
+
+  Example:
+
+  ```ruby
+  Kramdown::Document.new(text, input: 'GFM', gfm_callout_types: ['HELP', 'FAQ', 'TIP'])
+  ```
+
+  These custom types will be added to the default types and can be used in callout syntax: `> [!HELP]`
+
+- **`gfm_callout_aliases`**: Define callout aliases that map to primary callout types (default: `{'CAUTION' => 'DANGER'}`)
+
+  Aliases allow alternative callout names to render using a primary type's style while preserving the alias name for titles.
+
+  The value should be a hash mapping alias names to primary type names. Both keys and values are case-insensitive and will be converted to uppercase.
+
+  Example:
+
+  ```ruby
+  Kramdown::Document.new(text, input: 'GFM', gfm_callout_aliases: {'ERROR' => 'DANGER', 'TIP' => 'SUCCESS'})
+  ```
+
+  **Note:** Providing this option will REPLACE the default aliases, not merge with them. If you want to keep the default `CAUTION` alias, you must include it in your configuration.
 
 ## Development
 

@@ -214,13 +214,29 @@ module Kramdown
       end
 
       # GitHub-style callouts (also called admonitions or alerts)
-      # Matches blockquotes starting with > [!TYPE] where TYPE is NOTE, TIP, IMPORTANT, WARNING, CAUTION
-      CALLOUT_TYPES = %w[NOTE TIP IMPORTANT WARNING CAUTION].freeze
-      CALLOUT_START = /^>[ \t]*\[!(#{CALLOUT_TYPES.join('|')})\]/
+      # Matches blockquotes starting with > [!TYPE] where TYPE is one of the primary types or aliases
+      # Default primary callout types
+      DEFAULT_CALLOUT_TYPES = %w[INFO NOTE SUCCESS WARNING DANGER].freeze
+
+      def callout_types
+        @callout_types ||= (DEFAULT_CALLOUT_TYPES + @options[:gfm_callout_types]).freeze
+      end
+
+      def callout_aliases
+        @callout_aliases ||= @options[:gfm_callout_aliases].freeze
+      end
+
+      def callout_indicators
+        @callout_indicators ||= (callout_types + callout_aliases.keys).freeze
+      end
+
+      def callout_start_regex
+        @callout_start_regex ||= /^>[ \t]*\[!(#{callout_indicators.join('|')})\]/
+      end
 
       def parse_blockquote
         # Check if this is a callout before parsing as regular blockquote
-        if @src.check(CALLOUT_START)
+        if @src.check(callout_start_regex)
           return parse_callout
         end
 
@@ -230,13 +246,16 @@ module Kramdown
       def parse_callout
         line_number = @src.current_line_number
 
-        # Extract the callout type and first line content
-        start_line = @src.scan(/^>[ \t]*\[!(#{CALLOUT_TYPES.join('|')})\][ \t]*(.*)$/)
+        # Extract the callout indicator (type or alias) and first line content
+        start_line = @src.scan(/^>[ \t]*\[!(#{callout_indicators.join('|')})\][ \t]*(.*)$/)
         return false unless start_line
 
-        match = start_line.match(/^>[ \t]*\[!(#{CALLOUT_TYPES.join('|')})\][ \t]*(.*)$/)
-        callout_type = match[1]
+        match = start_line.match(/^>[ \t]*\[!(#{callout_indicators.join('|')})\][ \t]*(.*)$/)
+        callout_indicator = match[1]  # Could be primary type or alias
         first_content = match[2]
+
+        # Resolve alias to primary type for styling, or use indicator if it's a primary type
+        callout_type = callout_aliases[callout_indicator] || callout_indicator
 
         # Consume the newline
         @src.scan("\n")
@@ -255,7 +274,7 @@ module Kramdown
           @src.scan("\n") || break
         end
 
-        # Create callout container
+        # Create callout container with the resolved primary type's style
         callout_class = "callout callout-#{callout_type.downcase}"
         el = Element.new(:html_element, 'div', {'class' => callout_class},
                          category: :block, line: line_number)
