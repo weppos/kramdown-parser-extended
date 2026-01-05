@@ -3,4 +3,8 @@ pkg/
 CONTRIBUTERS
 VERSION
 
+# Local configs
+.tool-versions
+
+# Local files
 Gemfile.lock

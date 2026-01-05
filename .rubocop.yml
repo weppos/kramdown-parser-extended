@@ -1,7 +1,7 @@
 AllCops:
   Include:
     - lib/**/*.rb
-  TargetRubyVersion: 2.3
+  TargetRubyVersion: 3.2
 
 
 Metrics/LineLength:
