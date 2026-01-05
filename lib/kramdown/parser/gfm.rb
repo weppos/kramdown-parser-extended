@@ -257,14 +257,6 @@ module Kramdown
                         category: :block, line: line_number)
         @tree.children << el
 
-        # Add title element
-        title_el = Element.new(:html_element, 'p', {'class' => 'markdown-alert-title'},
-                              category: :block, line: line_number)
-        el.children << title_el
-        title_text = Element.new(:text, callout_type.capitalize, nil,
-                                location: line_number)
-        title_el.children << title_text
-
         # Parse content as markdown
         content = content_lines.join("\n")
         unless content.strip.empty?
