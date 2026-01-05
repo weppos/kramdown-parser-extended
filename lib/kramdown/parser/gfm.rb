@@ -213,6 +213,73 @@ module Kramdown
         true
       end
 
+      # GitHub-style callouts (also called admonitions or alerts)
+      # Matches blockquotes starting with > [!TYPE] where TYPE is NOTE, TIP, IMPORTANT, WARNING, CAUTION
+      CALLOUT_TYPES = %w[NOTE TIP IMPORTANT WARNING CAUTION].freeze
+      CALLOUT_START = /^>[ \t]*\[!(#{CALLOUT_TYPES.join('|')})\]/.freeze
+
+      def parse_blockquote
+        # Check if this is a callout before parsing as regular blockquote
+        if @src.check(CALLOUT_START)
+          return parse_callout
+        end
+
+        super
+      end
+
+      def parse_callout
+        line_number = @src.current_line_number
+
+        # Extract the callout type and first line content
+        start_line = @src.scan(/^>[ \t]*\[!(#{CALLOUT_TYPES.join('|')})\][ \t]*(.*)$/)
+        return false unless start_line
+
+        match = start_line.match(/^>[ \t]*\[!(#{CALLOUT_TYPES.join('|')})\][ \t]*(.*)$/)
+        callout_type = match[1]
+        first_content = match[2]
+
+        # Consume the newline
+        @src.scan(/\n/)
+
+        # Collect remaining blockquote lines
+        content_lines = []
+        content_lines << first_content if first_content && !first_content.empty?
+
+        while @src.scan(/^>[ \t]?/)
+          line = @src.scan(/.*$/)
+          content_lines << (line || '')
+          @src.scan(/\n/) || break
+        end
+
+        # Create callout container
+        callout_class = "markdown-alert markdown-alert-#{callout_type.downcase}"
+        el = Element.new(:html_element, 'div', {'class' => callout_class},
+                        category: :block, line: line_number)
+        @tree.children << el
+
+        # Add title element
+        title_el = Element.new(:html_element, 'p', {'class' => 'markdown-alert-title'},
+                              category: :block, line: line_number)
+        el.children << title_el
+        title_text = Element.new(:text, callout_type.capitalize, nil,
+                                location: line_number)
+        title_el.children << title_text
+
+        # Parse content as markdown
+        content = content_lines.join("\n")
+        unless content.strip.empty?
+          # Ensure content ends with newline for proper block parsing
+          content += "\n" unless content.end_with?("\n")
+
+          env = save_env
+          reset_env(src: Kramdown::Utils::StringScanner.new(content, line_number))
+          parse_blocks(el)
+          restore_env(env)
+        end
+
+        true
+      end
+
       ESCAPED_CHARS_GFM = /\\([\\.*_+`<>()\[\]{}#!:\|"'\$=\-~])/.freeze
       define_parser(:escaped_chars_gfm, ESCAPED_CHARS_GFM, '\\\\', :parse_escaped_chars)
 
