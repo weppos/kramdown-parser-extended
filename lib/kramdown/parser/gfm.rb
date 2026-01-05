@@ -252,7 +252,7 @@ module Kramdown
         end
 
         # Create callout container
-        callout_class = "markdown-alert markdown-alert-#{callout_type.downcase}"
+        callout_class = "callout callout-#{callout_type.downcase}"
         el = Element.new(:html_element, 'div', {'class' => callout_class},
                         category: :block, line: line_number)
         @tree.children << el
