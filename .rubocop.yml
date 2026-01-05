@@ -1,10 +1,12 @@
+inherit_from: .rubocop_todo.yml
+
 AllCops:
   Include:
     - lib/**/*.rb
   TargetRubyVersion: 3.2
 
 
-Metrics/LineLength:
+Layout/LineLength:
   Max: 120 # Preferred length is 100
 
 Metrics/ParameterLists:
@@ -84,9 +86,6 @@ Style/FormatString:
 Style/Semicolon:
   AllowAsExpressionSeparator: true
 
-Style/YodaCondition:
-  EnforcedStyle: equality_operators_only
-
 Style/EmptyElse:
   EnforcedStyle: empty
 
@@ -96,7 +95,7 @@ Style/Documentation:
 Style/GuardClause:
   Enabled: false # false alarms
 
-Style/MethodMissingSuper:
+Lint/MissingSuper:
   Enabled: false # why the need to fallback to super?
 
 Style/Next:
@@ -142,7 +141,7 @@ Style/FormatStringToken:
   Enabled: false # I don't care about this
 
 
-Layout/AlignHash:
+Layout/HashAlignment:
   EnforcedLastArgumentHashStyle: ignore_implicit
 
 Layout/SpaceInsideBlockBraces:
@@ -173,7 +172,7 @@ Layout/DotPosition:
 Layout/EmptyLineAfterMagicComment:
   Enabled: false # we have the magic comment and then the license
 
-Layout/IndentAssignment:
+Layout/AssignmentIndentation:
   Enabled: false # false alarms
 
 
@@ -188,5 +187,5 @@ Naming/FileName:
 Naming/HeredocDelimiterNaming:
   Enabled: false # we like our delimiters short and obvious
 
-Naming/UncommunicativeMethodParamName:
+Naming/MethodParameterName:
   Enabled: false # for points the names x,y are perfectly reasonable
