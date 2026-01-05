@@ -73,3 +73,19 @@ Next paragraph.
 # Only first line content
 
 > [!WARNING] This is all on one line.
+
+# Custom titles
+
+> [!NOTE] Custom Note Title
+> This callout has a custom title.
+
+> [!TIP] Callouts can have custom titles
+> Like this one.
+
+> [!IMPORTANT] Remember This!
+> Custom titles can be anything you want.
+
+> [!WARNING] Multi-line custom title callout
+> With content on multiple lines.
+>
+> And multiple paragraphs too.

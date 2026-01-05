@@ -241,9 +241,13 @@ module Kramdown
         # Consume the newline
         @src.scan("\n")
 
+        # Determine title: use custom title if provided, otherwise use type
+        custom_title = first_content && !first_content.strip.empty? ? first_content.strip : nil
+        title = custom_title || callout_type.capitalize
+
         # Collect remaining blockquote lines
+        # Don't include first_content if it was used as a custom title
         content_lines = []
-        content_lines << first_content if first_content && !first_content.empty?
 
         while @src.scan(/^>[ \t]?/)
           line = @src.scan(/.*$/)
@@ -256,6 +260,14 @@ module Kramdown
         el = Element.new(:html_element, 'div', {'class' => callout_class},
                          category: :block, line: line_number)
         @tree.children << el
+
+        # Add title element
+        title_el = Element.new(:html_element, 'p', {'class' => 'callout-title'},
+                              category: :block, line: line_number)
+        el.children << title_el
+        title_text = Element.new(:text, title, nil,
+                                location: line_number)
+        title_el.children << title_text
 
         # Parse content as markdown
         content = content_lines.join("\n")
