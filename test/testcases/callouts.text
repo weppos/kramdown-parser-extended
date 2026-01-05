@@ -1,0 +1,75 @@
+# Single-line callouts
+
+> [!NOTE]
+> Useful information that users should know, even when skimming content.
+
+> [!TIP]
+> Helpful advice for doing things better or more easily.
+
+> [!IMPORTANT]
+> Key information users need to know to achieve their goal.
+
+> [!WARNING]
+> Urgent info that needs immediate user attention to avoid problems.
+
+> [!CAUTION]
+> Advises about risks or negative outcomes of certain actions.
+
+# Multi-line callouts
+
+> [!NOTE]
+> This is a multi-line note.
+>
+> It has multiple paragraphs.
+
+> [!TIP]
+> Line one
+> Line two
+> Line three
+
+# Callouts with markdown content
+
+> [!IMPORTANT]
+> This has **bold** and *italic* text.
+
+> [!WARNING]
+> This has a [link](https://example.com).
+
+> [!NOTE]
+> This has `inline code`.
+
+> [!NOTE]
+> This has a list:
+>
+> - Item 1
+> - Item 2
+> - Item 3
+
+# Regular blockquotes still work
+
+> This is a regular blockquote.
+> It should not be a callout.
+
+# Mixed content
+
+Some text before.
+
+> [!CAUTION]
+> Be careful with this operation.
+
+Some text after.
+
+# Callout immediately followed by content
+
+> [!NOTE]
+> Important note here.
+
+Next paragraph.
+
+# Empty content after callout marker
+
+> [!TIP]
+
+# Only first line content
+
+> [!WARNING] This is all on one line.
