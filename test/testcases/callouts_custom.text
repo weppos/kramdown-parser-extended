@@ -1,0 +1,23 @@
+# Custom callout types
+
+> [!HELP]
+> This is a custom HELP callout type.
+
+> [!FAQ]
+> This is a custom FAQ callout type.
+
+# Custom aliases
+
+> [!ERROR]
+> This uses the ERROR alias which renders as DANGER.
+
+> [!TIP]
+> This uses the TIP alias which renders as SUCCESS.
+
+# Mixed default and custom
+
+> [!NOTE]
+> This is a default NOTE callout.
+
+> [!HELP]
+> This is a custom HELP callout.

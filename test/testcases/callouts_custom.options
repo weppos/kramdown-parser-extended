@@ -1,0 +1,9 @@
+---
+auto_ids: false
+footnote_nr: 1
+gfm_callout_types:
+  - HELP
+  - FAQ
+gfm_callout_aliases:
+  ERROR: DANGER
+  TIP: SUCCESS

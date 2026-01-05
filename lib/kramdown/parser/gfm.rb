@@ -215,22 +215,28 @@ module Kramdown
 
       # GitHub-style callouts (also called admonitions or alerts)
       # Matches blockquotes starting with > [!TYPE] where TYPE is one of the primary types or aliases
-      # Primary callout types
-      CALLOUT_TYPES = %w[INFO NOTE SUCCESS WARNING DANGER].freeze
+      # Default primary callout types
+      DEFAULT_CALLOUT_TYPES = %w[INFO NOTE SUCCESS WARNING DANGER].freeze
 
-      # Callout aliases - map alternative names to primary types
-      # Aliases render using the primary type's style but keep their own name for titles
-      CALLOUT_ALIASES = {
-        'CAUTION' => 'DANGER',
-      }.freeze
+      def callout_types
+        @callout_types ||= (DEFAULT_CALLOUT_TYPES + @options[:gfm_callout_types]).freeze
+      end
 
-      # All valid callout indicators (primary types + aliases)
-      CALLOUT_INDICATORS = (CALLOUT_TYPES + CALLOUT_ALIASES.keys).freeze
-      CALLOUT_START = /^>[ \t]*\[!(#{CALLOUT_INDICATORS.join('|')})\]/
+      def callout_aliases
+        @callout_aliases ||= @options[:gfm_callout_aliases].freeze
+      end
+
+      def callout_indicators
+        @callout_indicators ||= (callout_types + callout_aliases.keys).freeze
+      end
+
+      def callout_start_regex
+        @callout_start_regex ||= /^>[ \t]*\[!(#{callout_indicators.join('|')})\]/
+      end
 
       def parse_blockquote
         # Check if this is a callout before parsing as regular blockquote
-        if @src.check(CALLOUT_START)
+        if @src.check(callout_start_regex)
           return parse_callout
         end
 
@@ -241,15 +247,15 @@ module Kramdown
         line_number = @src.current_line_number
 
         # Extract the callout indicator (type or alias) and first line content
-        start_line = @src.scan(/^>[ \t]*\[!(#{CALLOUT_INDICATORS.join('|')})\][ \t]*(.*)$/)
+        start_line = @src.scan(/^>[ \t]*\[!(#{callout_indicators.join('|')})\][ \t]*(.*)$/)
         return false unless start_line
 
-        match = start_line.match(/^>[ \t]*\[!(#{CALLOUT_INDICATORS.join('|')})\][ \t]*(.*)$/)
+        match = start_line.match(/^>[ \t]*\[!(#{callout_indicators.join('|')})\][ \t]*(.*)$/)
         callout_indicator = match[1]  # Could be primary type or alias
         first_content = match[2]
 
         # Resolve alias to primary type for styling, or use indicator if it's a primary type
-        callout_type = CALLOUT_ALIASES[callout_indicator] || callout_indicator
+        callout_type = callout_aliases[callout_indicator] || callout_indicator
 
         # Consume the newline
         @src.scan("\n")
