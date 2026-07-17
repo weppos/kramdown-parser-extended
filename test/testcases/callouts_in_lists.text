@@ -1,0 +1,29 @@
+# Callout nested in an ordered list
+
+1. First step
+
+    > [!NOTE]
+    > A callout indented inside a list item.
+
+2. Second step
+
+# Callout nested in an unordered list
+
+- Do this
+
+    > [!WARNING]
+    > Be careful here.
+
+# Multi-line callout nested in a list
+
+1. Step one
+
+    > [!SUCCESS]
+    > Line one
+    > Line two
+
+# Regular indented blockquote still works
+
+1. First step
+
+    > A plain blockquote inside a list.

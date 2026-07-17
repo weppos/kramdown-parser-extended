@@ -6,6 +6,7 @@
 
 ### Bug Fixes
 
+* Recognize GitHub-style callouts that are indented inside a list item, allowing up to 3 leading spaces before the `>` marker to match kramdown's own blockquote handling
 * Do not cast Symbols into strings to be re-casted in the options hash ([#20](https://github.com/kramdown/parser-gfm/pull/20))
 * Respect `:transliterated_header_ids` kramdown option ([#22](https://github.com/kramdown/parser-gfm/pull/22))
 
