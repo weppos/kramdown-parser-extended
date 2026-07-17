@@ -230,8 +230,13 @@ module Kramdown
         @callout_indicators ||= (callout_types + callout_aliases.keys).freeze
       end
 
+      # Up to 3 leading spaces are allowed before the marker, matching kramdown's
+      # own BLOCKQUOTE_START. This lets callouts be recognized when they are
+      # indented inside a list item.
+      CALLOUT_MARKER = / {0,3}>/
+
       def callout_start_regex
-        @callout_start_regex ||= /^>[ \t]*\[!(#{callout_indicators.join('|')})\]/
+        @callout_start_regex ||= /^#{CALLOUT_MARKER}[ \t]*\[!(#{callout_indicators.join('|')})\]/
       end
 
       def parse_blockquote
@@ -247,10 +252,11 @@ module Kramdown
         line_number = @src.current_line_number
 
         # Extract the callout indicator (type or alias) and first line content
-        start_line = @src.scan(/^>[ \t]*\[!(#{callout_indicators.join('|')})\][ \t]*(.*)$/)
+        callout_line_regex = /^#{CALLOUT_MARKER}[ \t]*\[!(#{callout_indicators.join('|')})\][ \t]*(.*)$/
+        start_line = @src.scan(callout_line_regex)
         return false unless start_line
 
-        match = start_line.match(/^>[ \t]*\[!(#{callout_indicators.join('|')})\][ \t]*(.*)$/)
+        match = start_line.match(callout_line_regex)
         callout_indicator = match[1]  # Could be primary type or alias
         first_content = match[2]
 
@@ -268,7 +274,7 @@ module Kramdown
         # Don't include first_content if it was used as a custom title
         content_lines = []
 
-        while @src.scan(/^>[ \t]?/)
+        while @src.scan(/^#{CALLOUT_MARKER}[ \t]?/)
           line = @src.scan(/.*$/)
           content_lines << (line || '')
           @src.scan("\n") || break
